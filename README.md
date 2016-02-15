@@ -5,7 +5,7 @@ Course Project for the Coursera Developing Data Products class.
 
 
 
-* [Car Payment Calculator](https://github.com/csantill/CourseraDataProduct)
+* [Car Payment Calculator](https://csantill.shinyapps.io/CarCalculator/)
 
 * [Presentation for Project](http://csantill.github.io/DataProductPresentation/)
 
