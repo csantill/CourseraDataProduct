@@ -10,7 +10,8 @@ Course Project for the Coursera Developing Data Products class.
 
 Simple Car Payment calculator 
 
-Useful tool to estimate the monthly car payment.
+Tool to estimate the monthly car payment.
+Developed using Shiny for calculator and Slidify for Presentation 
 
 
 Enter 
