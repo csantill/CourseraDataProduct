@@ -1,0 +1,129 @@
+---
+title       : Car Payment Calculator
+subtitle    : simple car payment calculator
+author      : Carlos Santillan
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+
+```{r formula-cacl, echo=FALSE }
+
+CalculatePaymentAmount<-function(P,n, R) {
+    r <- (R/12)/100
+    N <- n
+    M <- (P*r)/(1-(1+r)^(-n))
+    monthPay <- M
+    totalPay <- M*n -P
+
+    return (c(monthPay,totalPay))
+}
+
+```
+
+## Car Payment Calculator
+
+### Know what the estimate monthly car payment will be before you buy
+
+* How much vehicle can you afford?
+* What impact will a downpayment have on monthy payment?
+* Shop around for better interest Rate
+
+---
+
+## Car Sale price
+
+Make sure you research the car you are interested in buying and shop around.
+The same car may be found at different dealers at significant discount
+
+
+```{r carsale, echo=FALSE }
+ p1 <- CalculatePaymentAmount(25000,60,6)[1]
+ p2 <- CalculatePaymentAmount(23000,60,5)[1]
+```
+
+The payment amount for a 5% interest load on a vehicle that costs $25,000.00 over 60 months will be `r format(p1 ,digits=2,nsmall=2)` , if you can find same vehicle for $23,000.00 the payment will be `r format(p2,digits=2,nsmall=2)` a saving of `r format( p1-p2,digits=2,nsmall=2)` a month
+
+
+
+
+
+
+--- 
+
+## Trade in Value
+
+ * Check sites such as [Kelly Blue Book](http://www.kbb.com/) to estimate the value of your trade in
+ 
+ * Car wash/Detail could add value to car
+
+--- 
+
+## Down Payment
+
+```{r downpayment, echo=FALSE }
+ carcost <- 25000
+ downpayment <-3000
+ downpayment2 <-4000
+ pNodown <- CalculatePaymentAmount(carcost,60,5)[1]
+ pwDown <- CalculatePaymentAmount(carcost-downpayment,60,5)[1]
+ pwDown2 <- CalculatePaymentAmount(carcost-downpayment2,60,5)[1]
+ 
+```
+
+ Saving for a down payment could save you many
+ Try different combinations of down payment to see how it affects your car Payment
+ 
+ * With no down payment a $25,000.00 car 5 year, 5 % car will have a cost of $ `r format(pNodown,digits=2,nsmall=2)`.
+ 
+ * With $3,000 down payment a $25,000.00 car 5 year, 5 % car will have a cost of $ `r format(pwDown,digits=2,nsmall=2)`
+ 
+ * With $5,000 down payment a $25,000.00 car 5 year, 5 % car will have a cost of $ `r format(pwDown2,digits=2,nsmall=2)`
+
+---
+
+## Interest Rate
+
+
+```{r carInterest, echo=FALSE }
+ r1 <- CalculatePaymentAmount(25000,60,4)[1]
+ r2 <- CalculatePaymentAmount(25000,60,5)[1]
+ total1 <- CalculatePaymentAmount(25000,60,4)[2]
+ total2 <- CalculatePaymentAmount(25000,60,5)[2]
+```
+
+ Get preapproved for your loan from your bank or a credit union.
+ 
+ Dealers may have their own financing options but they may not be the best deal. 
+ A good intest rate could save you thousands over the life of the loan
+ 
+ * $25,000.00 car 5 year, 5 % car will have a monthly payment of `r format(r1,digits=2,nsmall=2)`, and total cost of loan of `r format(total1,digits=2,nsmall=2)`
+ * $25,000.00 car 5 year, 5 % car will have a monthly payment of `r format(r2,digits=2,nsmall=2)`, and total cost of loan of `r format(total2,digits=2,nsmall=2)`
+
+--- 
+
+
+## Term
+
+60 months (5 year) loans may help you lower the monthly payment, but you will pay more in interest.
+
+
+
+```{r Term, echo=FALSE }
+ termp1 <- CalculatePaymentAmount(25000,60,5)[1]
+ termp2 <- CalculatePaymentAmount(23000,48,5)[1]
+```
+
+* $25,000.00 car 5 year, 5 % car will have a monthly payment of `r format(termp1,digits=2,nsmall=2)`
+ 
+* $25,000.00 car 4 year, 5 % car will have a monthly payment of `r format(termp2,digits=2,nsmall=2)`
+
+
+
+---
+

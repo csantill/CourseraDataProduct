@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\n# This is the server logic for a Shiny web application.\n# You can find out more about building applications with Shiny here:\n#\n# http://shiny.rstudio.com\n#\n\nlibrary(shiny)\n\n# Car Payment ammortization calculations based on calculations at\n# http://faculty.ucr.edu/~tgirke/Documents/R_BioCond/My_R_Scripts/mortgage.R\n\n\n# Calculate Car Payment\n\nCalculatePaymentAmount<-function(P,n, R) {\n    r <- (R/12)/1000\n    N <- n\n    M <- (P*r)/(1-(1+r)^(-n))\n    monthPay <- M\n    totalPay <- M*n - P\n\n    return (c(monthPay,totalPay))\n}\n\nAmortAmount<-function(P,n, R) {\n  r <- (R/12)/1000\n  N <- n\n  M <- (P*r)/(1-(1+r)^(-n))\n  monthPay <- M\n  totalPay <- M*n - P\n  # Calculate Amortization for each Month\n  \n  \n  Pt <- P # current principal or amount of the loan\n  currP <- NULL\n  while(Pt>=0) {\n    H <- Pt * r # this is the current monthly interest\n    C <- M - H # this is your monthly payment minus your monthly interest, so it is the amount of principal you pay for that month\n    Q <- Pt - C # this is the new balance of your principal of your loan\n    Pt <- Q # sets P equal to Q and goes back to step 1. The loop continues until the value Q (and hence P) goes to zero\n    currP <- c(currP, Pt)\n  }\n  monthP <- c(P, currP[1:(length(currP)-1)])-currP\n  aDFmonth <<- data.frame(\n    Amortization=c(P, currP[1:(length(currP)-1)]), \n    Monthly_Payment=monthP+c((monthPay-monthP)[1:(length(monthP)-1)],0),\n    Monthly_Principal=monthP, \n    Monthly_Interest=c((monthPay-monthP)[1:(length(monthP)-1)],0), \n    Year=sort(rep(1:ceiling(N/12), 12))[1:length(monthP)]\n  )\n  aDFyear  <- data.frame(\n    Amortization=tapply(aDFmonth$Amortization, aDFmonth$Year, max), \n    Annual_Payment=tapply(aDFmonth$Monthly_Payment, aDFmonth$Year, sum), \n    Annual_Principal=tapply(aDFmonth$Monthly_Principal, aDFmonth$Year, sum), \n    Annual_Interest=tapply(aDFmonth$Monthly_Interest, aDFmonth$Year, sum), \n    Year=as.vector(na.omit(unique(aDFmonth$Year)))\n  )\n  \n  #cat (aDFyear)\n  return (aDFyear)\n}\n\n\nshinyServer(\n  function(input, output) {\n    #principalVal <- 100\n    #principalVal <- reactive ( {input$carVal}  - {input$tradeVal} - {input$downVal} + {input$otherVal})\n    \n    # builds a reactive expression that only invalidates \n    # when the value of input$goButton becomes out of date \n    # (i.e., when the button is pressed)\n    calcValue <- eventReactive(input$calculate, {\n      principalVal <- input$carVal  - input$tradeVal - input$downVal + input$otherVal\n      payment <- CalculatePaymentAmount(principalVal,input$termVal,input$termVal)\n      payment\n    })\n    \n    AmortValue <- eventReactive(input$calculate, {\n      principalVal <- input$carVal  - input$tradeVal - input$downVal + input$otherVal\n      payment <- AmortAmount(principalVal,input$termVal,input$termVal)\n      payment\n    })\n\n    output$carPayment <- renderText(calcValue()[1])\n    output$totalPayment <- renderText(calcValue()[2])\n    \n    output$newBar<- renderPlot({\n                                amort <- AmortValue()\n                                barplot(t(amort[,c(3,4)]),\n                                        col=c(\"blue\", \"red\"),\n                                        main=\"Annual Interest and Principal Payments\",\n                                        xlab=\"Years\", ylab=\"$ Amount\",\n                                        legend.text=c(\"Principal\", \"Interest\"),\n                                        ylim=c(0, max(amort$Annual_Payment)*1.3))\n    })\n\n    \n    \n  }\n)\n\n",
+    "created" : 1455569386687.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3774171121",
+    "id" : "F6C92585",
+    "lastKnownWriteTime" : 1455552721,
+    "last_content_update" : 1455552721,
+    "path" : "~/CarCalculator/server.R",
+    "project_path" : "server.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
